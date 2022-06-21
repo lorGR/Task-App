@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js" integrity="sha512-xIPqqrfvUAc/Cspuj7Bq0UtHNo/5qkdyngx6Vwt+tmbvTLDszzXM0G6c91LXmGrRx8KEPulT+AfOOez+TeVylg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>User Info - Task Manager</title>
+    <link rel="stylesheet" href="../styles/dist/userInfo.css">
+</head>
+<body onload="handleUserInfo()">
+    <header>
+        <h1 id="greetUser"></h1>
+    </header>
+    <main>
+        <div id="taskContainer">
+            <div id="toDoTasks">
+                <h2>Tasks To Do:</h2>
+                <div id="toDoTasksContainer"></div>
+            </div>
+            <div id="completedTasks">
+                <h2>Tasks Completed:</h2>
+                <div id="completedTasksContainer"></div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <button onclick="handleBackUsers()">Back User Selection</button>
+    </footer>
+    <script src="../scripts/dist/userInfo.js"></script>
+</body>
+</html>
