@@ -34,9 +34,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var urlParams = new URLSearchParams(window.location.search);
-var userId = urlParams.get('userId');
-console.log("Looking at user with id: " + userId);
+function getUserIdParm() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var userId = urlParams.get('userId');
+    console.log("Looking at user with id: " + userId);
+    return userId;
+}
 function handleUserInfo() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -48,11 +51,12 @@ function handleUserInfo() {
 }
 function getUser() {
     return __awaiter(this, void 0, void 0, function () {
-        var data, user, error, error_1;
+        var userId, data, user, error, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
+                    userId = getUserIdParm();
                     return [4 /*yield*/, axios.post('/users/get-user', { userId: userId })];
                 case 1:
                     data = (_a.sent()).data;
@@ -90,11 +94,12 @@ function greetUser(userName) {
 }
 function getUserTasks() {
     return __awaiter(this, void 0, void 0, function () {
-        var data, tasks, error, error_2;
+        var userId, data, tasks, error, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
+                    userId = getUserIdParm();
                     return [4 /*yield*/, axios.get("/tasks/get-tasks?userId=" + userId)];
                 case 1:
                     data = (_a.sent()).data;
@@ -118,19 +123,20 @@ function getUserTasks() {
 }
 function renderUsersTasks(userTasks) {
     return __awaiter(this, void 0, void 0, function () {
-        var toDoTasksContainer, completedTasksContainer, htmlToDo_1, htmlCompleted_1;
+        var userId_1, toDoTasksContainer, completedTasksContainer, htmlToDo_1, htmlCompleted_1;
         return __generator(this, function (_a) {
             try {
+                userId_1 = getUserIdParm();
                 toDoTasksContainer = document.getElementById('toDoTasksContainer');
                 completedTasksContainer = document.getElementById('completedTasksContainer');
                 htmlToDo_1 = "";
                 htmlCompleted_1 = "";
                 userTasks.forEach(function (task) {
                     if (task.completed) {
-                        htmlCompleted_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId + "')>Edit Task Name</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
+                        htmlCompleted_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId_1 + "')>Edit Task Name</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
                     }
                     else {
-                        htmlToDo_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId + "')>Edit Task Name</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
+                        htmlToDo_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId_1 + "')>Edit Task Name</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
                     }
                 });
                 toDoTasksContainer.innerHTML = htmlToDo_1;
@@ -145,18 +151,23 @@ function renderUsersTasks(userTasks) {
 }
 function handleDeleteTask(taskId) {
     return __awaiter(this, void 0, void 0, function () {
-        var data, error_3;
+        var userId, data, tasks, error, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
+                    userId = getUserIdParm();
                     console.log("task with id: " + taskId + " was clicked");
                     return [4 /*yield*/, axios["delete"]('/tasks/delete-task', { data: { taskId: taskId, userId: userId } })];
                 case 1:
                     data = (_a.sent()).data;
                     if (!data)
-                        throw new Error("%c Couldn't receive data from axios PATCH request URL: *** /tasks/delete-task ***");
+                        throw new Error("Couldn't receive data from axios PATCH request URL: *** /tasks/delete-task ***");
                     console.log(data);
+                    tasks = data.tasks, error = data.error;
+                    if (error)
+                        throw new Error(error);
+                    renderUsersTasks(tasks);
                     return [3 /*break*/, 3];
                 case 2:
                     error_3 = _a.sent();
@@ -167,8 +178,8 @@ function handleDeleteTask(taskId) {
         });
     });
 }
-function handleEditTask(taskId, userId) {
-    window.location.href = "./editTask.html?userId=" + userId + "?taskId=" + taskId;
+function handleEditTask(taskId) {
+    window.location.href = "./editTask.html?userId=" + taskId;
 }
 function handleBackUsers() {
     window.location.href = "./userSelection.html";

@@ -1,6 +1,10 @@
-const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get('userId');
-console.log(`Looking at user with id: ${userId}`);
+function getUserIdParm(): string {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    console.log(`Looking at user with id: ${userId}`);
+    return userId;
+}
+
 
 async function handleUserInfo() {
     getUser();
@@ -9,6 +13,7 @@ async function handleUserInfo() {
 
 async function getUser() {
     try {
+        const userId = getUserIdParm();
         //@ts-ignore
         const { data } = await axios.post('/users/get-user', { userId });
         if (!data) throw new Error("Couldn't receive 'data'in axios POST Request URL: *** /users/get-user ***");
@@ -31,6 +36,7 @@ async function greetUser(userName: User) {
 
 async function getUserTasks() {
     try {
+        const userId = getUserIdParm();
         //@ts-ignore
         const { data } = await axios.get(`/tasks/get-tasks?userId=${userId}`);
         if (!data) throw new Error("Couldn't receive 'Data' from axios GET request URL: ***/tasks/get-tasks*** ");
@@ -46,6 +52,7 @@ async function getUserTasks() {
 
 async function renderUsersTasks(userTasks: Array<Task>) {
     try {
+        const userId = getUserIdParm();
         const toDoTasksContainer = document.getElementById('toDoTasksContainer');
         const completedTasksContainer = document.getElementById('completedTasksContainer');
         let htmlToDo = "";
@@ -78,18 +85,22 @@ async function renderUsersTasks(userTasks: Array<Task>) {
 
 async function handleDeleteTask(taskId: string) {
     try {
+        const userId = getUserIdParm();
         console.log(`task with id: ${taskId} was clicked`);
         //@ts-ignore
         const { data } = await axios.delete('/tasks/delete-task', { data: {taskId, userId} });
-        if (!data) throw new Error("%c Couldn't receive data from axios PATCH request URL: *** /tasks/delete-task ***")
+        if (!data) throw new Error("Couldn't receive data from axios PATCH request URL: *** /tasks/delete-task ***")
         console.log(data);
+        const { tasks , error } = data;
+        if(error) throw new Error(error);
+        renderUsersTasks(tasks);
     } catch (error) {
         console.error(error);
     }
 }
 
-function handleEditTask(taskId: string, userId: string) {
-    window.location.href = `./editTask.html?userId=${userId}?taskId=${taskId}`;
+function handleEditTask(taskId: string) {
+    window.location.href = `./editTask.html?userId=${taskId}`;
 }
 
 function handleBackUsers() {
