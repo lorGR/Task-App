@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getUser = exports.getAllUsers = exports.users = void 0;
+exports.addUser = exports.getUser = exports.getAllUsers = exports.users = void 0;
 var helper_1 = require("../helpers/helper");
 exports.users = [
     {
@@ -87,3 +87,23 @@ function getUser(req, res) {
     });
 }
 exports.getUser = getUser;
+function addUser(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var newUserName, newUser;
+        return __generator(this, function (_a) {
+            try {
+                newUserName = req.body.newUserName;
+                if (!newUserName)
+                    throw new Error("Couldn't get newUserName from body");
+                newUser = { name: newUserName, uid: helper_1.userUid() };
+                exports.users.push(newUser);
+                res.send({ users: exports.users });
+            }
+            catch (error) {
+                res.send({ error: error.message });
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.addUser = addUser;

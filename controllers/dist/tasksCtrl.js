@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.deleteTask = exports.getTasks = void 0;
+exports.completeTask = exports.addTask = exports.editTaskName = exports.deleteTask = exports.getTasks = void 0;
 var helper_1 = require("../helpers/helper");
 var usersCtrl_1 = require("./usersCtrl");
 var tasks = [
@@ -145,3 +145,85 @@ function deleteTask(req, res) {
     });
 }
 exports.deleteTask = deleteTask;
+function editTaskName(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, newTaskName_1, taskId_2;
+        return __generator(this, function (_b) {
+            try {
+                _a = req.body, newTaskName_1 = _a.newTaskName, taskId_2 = _a.taskId;
+                if (!newTaskName_1)
+                    throw new Error("Couldn't get newTaskName from body");
+                if (!taskId_2)
+                    throw new Error("Couldn't get taskId from body");
+                tasks.filter(function (task) {
+                    if (task.uid === taskId_2) {
+                        task.name = newTaskName_1;
+                        return true;
+                    }
+                    return false;
+                });
+                res.send({ tasks: tasks });
+            }
+            catch (error) {
+                res.send({ error: error.message });
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.editTaskName = editTaskName;
+function addTask(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, taskName, userId, newTask;
+        return __generator(this, function (_b) {
+            try {
+                _a = req.body, taskName = _a.taskName, userId = _a.userId;
+                if (!taskName)
+                    throw new Error("Couldn't get taskName from body");
+                if (!userId)
+                    throw new Error("Couldn't get userId from body");
+                newTask = { name: taskName, uid: helper_1.taskUid(), completed: false, usersId: userId };
+                tasks.push(newTask);
+                res.send({ tasks: tasks });
+            }
+            catch (error) {
+                res.send({ error: error.message });
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.addTask = addTask;
+function completeTask(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, taskId_3, userId_3;
+        return __generator(this, function (_b) {
+            try {
+                _a = req.body, taskId_3 = _a.taskId, userId_3 = _a.userId;
+                if (!taskId_3)
+                    throw new Error("Couldn't get  userId from body");
+                if (!taskId_3)
+                    throw new Error("Couldn't get taskId from body");
+                tasks.find(function (task) {
+                    if (task.uid === taskId_3) {
+                        if (task.completed === true) {
+                            task.completed = false;
+                            return true;
+                        }
+                        else {
+                            task.completed = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                res.send({ tasks: tasks.filter(function (task) { return task.usersId === userId_3; }) });
+            }
+            catch (error) {
+                res.send({ error: error.message });
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.completeTask = completeTask;

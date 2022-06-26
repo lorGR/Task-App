@@ -21,6 +21,7 @@ async function getUser() {
         if (!user) throw new Error("Couldn't deconstract object 'user' from data");
         if (error) throw new Error(error);
         greetUser(user);
+        renderAddButton();
     } catch (error) {
         console.error(error)
     }
@@ -63,6 +64,7 @@ async function renderUsersTasks(userTasks: Array<Task>) {
                     <div class="user-task">
                         <h3>${task.name}</h3>
                         <button onclick=handleEditTask('${task.uid}','${userId}')>Edit Task Name</button>
+                        <button onclick="handleCompleteTask('${task.uid}')">Uncomplete Task</button>
                         <button onclick=handleDeleteTask('${task.uid}')>Delete Task</button>
                     </div>
                 `;
@@ -71,6 +73,7 @@ async function renderUsersTasks(userTasks: Array<Task>) {
                     <div class="user-task">
                         <h3>${task.name}</h3>
                         <button onclick=handleEditTask('${task.uid}','${userId}')>Edit Task Name</button>
+                        <button onclick="handleCompleteTask('${task.uid}')">Complete Task</button>
                         <button onclick=handleDeleteTask('${task.uid}')>Delete Task</button>
                     </div>
                 `
@@ -88,19 +91,45 @@ async function handleDeleteTask(taskId: string) {
         const userId = getUserIdParm();
         console.log(`task with id: ${taskId} was clicked`);
         //@ts-ignore
-        const { data } = await axios.delete('/tasks/delete-task', { data: {taskId, userId} });
+        const { data } = await axios.delete('/tasks/delete-task', { data: { taskId, userId } });
         if (!data) throw new Error("Couldn't receive data from axios PATCH request URL: *** /tasks/delete-task ***")
         console.log(data);
-        const { tasks , error } = data;
-        if(error) throw new Error(error);
+        const { tasks, error } = data;
+        if (error) throw new Error(error);
         renderUsersTasks(tasks);
     } catch (error) {
         console.error(error);
     }
 }
 
-function handleEditTask(taskId: string) {
-    window.location.href = `./editTask.html?userId=${taskId}`;
+async function handleCompleteTask(taskId: string) {
+    try {
+        const userId = getUserIdParm();
+        //@ts-ignore
+        const { data } = await axios.patch('/tasks/completed-task', { taskId, userId });
+        if (!data) throw new Error("Couldn't get data from axios PATCH URL: *** /tasks/completed-task ***");
+        const { tasks, error } = data;
+        if (error) throw new Error(error);
+        console.log(tasks);
+        renderUsersTasks(tasks);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function handleEditTask(taskId: string, userId: string) {
+    window.location.href = `./editTask.html?userId=${userId}&taskId=${taskId}`;
+}
+
+function renderAddButton() {
+    const userId = getUserIdParm();
+    const addTask = document.getElementById('addTask').innerHTML = `
+        <button onclick="handleAddTaskPage('${userId}')">Add New Task</button>
+    `;
+}
+
+function handleAddTaskPage(userId: string) {
+    window.location.href = `./addTask.html?userId=${userId}`;
 }
 
 function handleBackUsers() {

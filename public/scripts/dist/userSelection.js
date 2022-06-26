@@ -71,6 +71,9 @@ function renderAllUsers(users) {
     });
     usersContainer.innerHTML = html;
 }
+function handleAddUserPage() {
+    window.location.href = './addUser.html';
+}
 function handleBackHome() {
     window.location.href = '../index.html';
 }

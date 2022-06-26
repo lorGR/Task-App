@@ -68,6 +68,7 @@ function getUser() {
                     if (error)
                         throw new Error(error);
                     greetUser(user);
+                    renderAddButton();
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
@@ -133,10 +134,10 @@ function renderUsersTasks(userTasks) {
                 htmlCompleted_1 = "";
                 userTasks.forEach(function (task) {
                     if (task.completed) {
-                        htmlCompleted_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId_1 + "')>Edit Task Name</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
+                        htmlCompleted_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId_1 + "')>Edit Task Name</button>\n                        <button onclick=\"handleCompleteTask('" + task.uid + "')\">Uncomplete Task</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
                     }
                     else {
-                        htmlToDo_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId_1 + "')>Edit Task Name</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
+                        htmlToDo_1 += "\n                    <div class=\"user-task\">\n                        <h3>" + task.name + "</h3>\n                        <button onclick=handleEditTask('" + task.uid + "','" + userId_1 + "')>Edit Task Name</button>\n                        <button onclick=\"handleCompleteTask('" + task.uid + "')\">Complete Task</button>\n                        <button onclick=handleDeleteTask('" + task.uid + "')>Delete Task</button>\n                    </div>\n                ";
                     }
                 });
                 toDoTasksContainer.innerHTML = htmlToDo_1;
@@ -178,8 +179,43 @@ function handleDeleteTask(taskId) {
         });
     });
 }
-function handleEditTask(taskId) {
-    window.location.href = "./editTask.html?userId=" + taskId;
+function handleCompleteTask(taskId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var userId, data, tasks, error, error_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    userId = getUserIdParm();
+                    return [4 /*yield*/, axios.patch('/tasks/completed-task', { taskId: taskId, userId: userId })];
+                case 1:
+                    data = (_a.sent()).data;
+                    if (!data)
+                        throw new Error("Couldn't get data from axios PATCH URL: *** /tasks/completed-task ***");
+                    tasks = data.tasks, error = data.error;
+                    if (error)
+                        throw new Error(error);
+                    console.log(tasks);
+                    renderUsersTasks(tasks);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_4 = _a.sent();
+                    console.error(error_4);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+function handleEditTask(taskId, userId) {
+    window.location.href = "./editTask.html?userId=" + userId + "&taskId=" + taskId;
+}
+function renderAddButton() {
+    var userId = getUserIdParm();
+    var addTask = document.getElementById('addTask').innerHTML = "\n        <button onclick=\"handleAddTaskPage('" + userId + "')\">Add New Task</button>\n    ";
+}
+function handleAddTaskPage(userId) {
+    window.location.href = "./addTask.html?userId=" + userId;
 }
 function handleBackUsers() {
     window.location.href = "./userSelection.html";

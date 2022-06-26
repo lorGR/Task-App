@@ -37,3 +37,16 @@ export async function getUser(req: express.Request, res: express.Response) {
         res.send({ error: error.message });
     }
 }
+
+export async function addUser(req: express.Request, res: express.Response) {
+    try {
+        const { newUserName } = req.body;
+        if (!newUserName) throw new Error("Couldn't get newUserName from body");
+        const newUser: User = { name: newUserName, uid: userUid()};
+        users.push (newUser);
+        res.send({ users });
+    } catch (error) {
+        res.send({ error: error.message });
+    }
+} 
+

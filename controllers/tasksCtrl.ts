@@ -95,3 +95,56 @@ export async function deleteTask(req: express.Request, res: express.Response) {
     }
 }
 
+export async function editTaskName(req: express.Request, res: express.Response) {
+    try {
+        const { newTaskName, taskId } = req.body;
+        if (!newTaskName) throw new Error("Couldn't get newTaskName from body");
+        if (!taskId) throw new Error("Couldn't get taskId from body");
+        tasks.filter(task => {
+            if (task.uid === taskId) {
+                task.name = newTaskName;
+                return true;
+            }
+            return false;
+        });
+        res.send({ tasks });
+    } catch (error) {
+        res.send({ error: error.message });
+    }
+}
+
+export async function addTask(req: express.Request, res: express.Response) {
+    try {
+        const { taskName, userId } = req.body;
+        if (!taskName) throw new Error("Couldn't get taskName from body");
+        if (!userId) throw new Error("Couldn't get userId from body");
+        const newTask: Task = { name: taskName, uid: taskUid(), completed: false, usersId: userId };
+        tasks.push(newTask);
+        res.send({ tasks });
+    } catch (error) {
+        res.send({ error: error.message });
+    }
+}
+
+export async function completeTask(req: express.Request, res: express.Response) {
+    try {
+        const { taskId, userId } = req.body;
+        if (!taskId) throw new Error("Couldn't get  userId from body");
+        if (!taskId) throw new Error("Couldn't get taskId from body");
+        tasks.find(task => {
+            if (task.uid === taskId) {
+                if(task.completed === true){
+                    task.completed = false;
+                    return true;
+                } else {
+                    task.completed = true;
+                    return true;
+                }
+            }
+            return false; 
+        });
+        res.send({ tasks: tasks.filter(task => task.usersId === userId) });
+    } catch (error) {
+        res.send({ error: error.message });
+    }
+}
