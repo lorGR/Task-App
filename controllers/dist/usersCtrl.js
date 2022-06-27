@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.addUser = exports.getUser = exports.getAllUsers = exports.users = void 0;
+exports.deleteUser = exports.addUser = exports.getUser = exports.getAllUsers = exports.users = void 0;
 var helper_1 = require("../helpers/helper");
 exports.users = [
     {
@@ -107,3 +107,29 @@ function addUser(req, res) {
     });
 }
 exports.addUser = addUser;
+function deleteUser(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var userId_2;
+        return __generator(this, function (_a) {
+            try {
+                userId_2 = req.body.userId;
+                if (!userId_2)
+                    throw new Error("Coudln't get userId from body");
+                exports.users = exports.users.filter(function (user) {
+                    if (user.uid === userId_2) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                });
+                res.send({ users: exports.users });
+            }
+            catch (error) {
+                res.send({ error: error.message });
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.deleteUser = deleteUser;

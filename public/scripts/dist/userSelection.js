@@ -63,11 +63,38 @@ function handleUsers() {
         });
     });
 }
+function handleDeleteUser(userId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data, users, error, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios["delete"]('/users/delete-user', { data: { userId: userId } })];
+                case 1:
+                    data = (_a.sent()).data;
+                    if (!data)
+                        throw new Error("Couldn't receive data from axios DELETE URL: *** /users/delete-user ***");
+                    users = data.users, error = data.error;
+                    if (error)
+                        throw new Error(error);
+                    console.log(users);
+                    renderAllUsers(users);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.error(error_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
 function renderAllUsers(users) {
     var usersContainer = document.getElementById('usersContainer');
     var html = "";
     users.forEach(function (user) {
-        html += "\n            <div class=\"userContainer\">\n                <a href=\"./userInfo.html?userId=" + user.uid + "\">" + user.name + "</a>\n            </div>\n        ";
+        html += "\n            <div class=\"userContainer\">\n                <a href=\"./userInfo.html?userId=" + user.uid + "\">" + user.name + "</a>\n                <button onclick=\"handleDeleteUser('" + user.uid + "')\">Delete User</button>\n            </div>\n        ";
     });
     usersContainer.innerHTML = html;
 }

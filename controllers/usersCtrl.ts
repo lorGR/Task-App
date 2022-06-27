@@ -48,5 +48,22 @@ export async function addUser(req: express.Request, res: express.Response) {
     } catch (error) {
         res.send({ error: error.message });
     }
-} 
+}
+
+export async function deleteUser(req: express.Request, res: express.Response) {
+    try {
+        const { userId } = req.body;
+        if (!userId) throw new Error("Coudln't get userId from body");
+        users = users.filter(user => {
+            if(user.uid === userId){
+                return false;
+            } else {
+                return true;
+            }
+        })
+        res.send({ users });
+    } catch (error) {
+        res.send( {error: error.message });
+    }
+}
 

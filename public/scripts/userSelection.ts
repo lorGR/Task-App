@@ -24,6 +24,20 @@ async function handleUsers() {
     }
 }
 
+async function handleDeleteUser(userId: string) {
+    try {
+        //@ts-ignore
+        const { data } = await axios.delete('/users/delete-user', { data: { userId } })
+        if (!data) throw new Error("Couldn't receive data from axios DELETE URL: *** /users/delete-user ***");
+        const { users, error } = data;
+        if(error) throw new Error(error);
+        console.log(users);
+        renderAllUsers(users);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 function renderAllUsers(users: Array<User>) {
     const usersContainer = document.getElementById('usersContainer');
     let html = "";
@@ -31,13 +45,14 @@ function renderAllUsers(users: Array<User>) {
         html += `
             <div class="userContainer">
                 <a href="./userInfo.html?userId=${user.uid}">${user.name}</a>
+                <button onclick="handleDeleteUser('${user.uid}')">Delete User</button>
             </div>
         `
     });
     usersContainer.innerHTML = html;
 }
 
-function handleAddUserPage(){
+function handleAddUserPage() {
     window.location.href = './addUser.html';
 }
 
